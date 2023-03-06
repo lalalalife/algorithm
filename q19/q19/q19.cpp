@@ -7,40 +7,76 @@ using namespace std;
 
 int n; 
 vector<int> v; 
-int add, sub, mul, divi;
+int op[4]; 
 
 int maxValue = -1e9;
 int minValue = 1e9;
 
-void dfs(int i, int now) 
+//void dfs(int i, int now) 
+//{    
+//    if (i == n)
+//    {
+//        minValue = min(minValue, now); 
+//        maxValue = max(maxValue, now); 
+//    }
+//    else
+//    {
+//        if (add > 0) {
+//            add -= 1; 
+//            dfs(i + 1, now + v[i]); 
+//            add += 1; 
+//        }
+//        if (sub > 0) {
+//            sub -= 1;
+//            dfs(i + 1, now - v[i]);
+//            sub += 1;
+//        }
+//        if (mul > 0) {
+//            mul -= 1;
+//            dfs(i + 1, now * v[i]);
+//            mul += 1;
+//        }
+//        if (divi > 0) {
+//            divi -= 1;
+//            dfs(i + 1, now / v[i]);
+//            divi += 1;
+//        }
+//    }
+//}
+
+void dfs(int result, int count)
 {
-    if (i == n)
-    {
-        minValue = min(minValue, now); 
-        maxValue = max(maxValue, now); 
+    cout << "result : " << result << ", count : " << count << endl; 
+    if (count == n - 1) {
+        minValue = min(result, minValue); 
+        maxValue = max(result, maxValue); 
+
+        cout << "min : " << minValue << ", max : " << maxValue << endl; 
+        return; 
     }
-    else
-    {
-        // 연산자 사용하고, 재귀가 끝나면 다시 연산자 개수를 ++... 
-        if (add > 0) {
-            add -= 1; 
-            dfs(i + 1, now + v[i]); 
-            add += 1; 
-        }
-        if (sub > 0) {
-            sub -= 1;
-            dfs(i + 1, now - v[i]);
-            sub += 1;
-        }
-        if (mul > 0) {
-            mul -= 1;
-            dfs(i + 1, now * v[i]);
-            mul += 1;
-        }
-        if (divi > 0) {
-            divi -= 1;
-            dfs(i + 1, now / v[i]);
-            divi += 1;
+
+    for (int i = 0; i < 4; i++) {
+        if (op[i] != 0) {
+            --op[i]; 
+            ///
+            if (i == 0) {
+                cout << result << " + " << v[count + 1] << endl;
+                dfs(result + v[count + 1], count+1); 
+            } 
+            else if (i == 1) {
+                cout << result << " - " << v[count + 1] << endl;
+                dfs(result - v[count + 1], count + 1);
+            }
+            else if (i == 2) {
+                cout << result << " * " << v[count + 1] << endl;
+                dfs(result * v[count + 1], count + 1);
+            }
+            else if (i == 3) {
+                cout << result << " / " << v[count + 1] << endl;
+                dfs(result / v[count + 1], count + 1);
+            }
+            ///
+            ++op[i];            // 이걸 더하는게 .. 
         }
     }
 }
@@ -55,9 +91,10 @@ int main()
         v.push_back(x);        
     }
     
-    cin >> add >> sub >> mul >> divi; 
+    for (int i = 0; i < 4; i++)
+        cin >> op[i]; 
 
-    dfs(1, v[0]); 
+    dfs(v[0], 0);
 
     cout << maxValue << endl << minValue << endl;
 }
